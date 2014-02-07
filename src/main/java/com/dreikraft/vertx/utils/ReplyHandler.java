@@ -33,7 +33,7 @@ public abstract class ReplyHandler<T> implements Handler<Message<T>> {
      * @param message a message with an arbitrary type
      */
     @Override
-    public void handle(Message message) {
+    public void handle(Message<T> message) {
         if ((message.body()) instanceof ReplyException) {
             handleFailure((ReplyException)message.body());
         } else {
