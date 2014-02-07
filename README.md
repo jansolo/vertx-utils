@@ -6,7 +6,7 @@ Various utilities and helpers useful, when developing applications and modules w
 Utility classes
 ---------------
 
-### ReplyHandler<T>
+### ReplyHandler&lt;T&gt;
 
 A wrapper for vert.x event bus message reply handlers, that nicely handles ReplyExceptionMessages. This comes 
 particularly useful, when dispatching a message on the event bus without a timeout  (send(...)) and the corresponding
