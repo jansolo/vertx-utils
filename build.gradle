@@ -2,9 +2,10 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven'
 
+archivesBaseName = rootProject.libname
 sourceCompatibility = 1.7
-version = version
-group = 'jansolo'
+version = rootProject.version
+group = rootProject.owner
 
 defaultTasks = ['assemble']
 
@@ -47,6 +48,25 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
+task sourceJar(type: Jar) {
+    description = 'Builds a source jar artifact suitable for maven deployment.'
+    classifier = 'sources'
+    from sourceSets.main.java
+}
+
+task javadocJar(type: Jar) {
+    description = 'Builds a javadoc jar artifact suitable for maven deployment.'
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+javadocJar.dependsOn javadoc
+
+build.dependsOn sourceJar, javadocJar
+
+artifacts {
+    archives sourceJar, javadocJar
+}
+
 uploadArchives {
     group 'build'
     description = "Does a maven deploy of archives artifacts"
@@ -66,7 +86,7 @@ Please edit the details below.
 def configurePom(def pom) {
     pom.project {
         name rootProject.name
-        description 'vert.x utility classes'
+        description rootProject.description
         inceptionYear '2014'
         packaging 'jar'
 
@@ -74,7 +94,7 @@ def configurePom(def pom) {
 
         developers {
             developer {
-                id 'jansolo'
+                id rootProject.owner
                 name 'Jan Illetschko'
                 email 'jan.illetschko@3kraft.com'
             }
@@ -94,6 +114,18 @@ def configurePom(def pom) {
 
         properties {
             setProperty('project.build.sourceEncoding', 'UTF8')
+        }
+    }
+}
+
+// Map the 'provided' dependency configuration to the appropriate IDEA visibility scopes.
+plugins.withType(IdeaPlugin) {
+    idea {
+        module {
+            scopes.PROVIDED.plus += configurations.provided
+            scopes.COMPILE.minus += configurations.provided
+            scopes.TEST.minus += configurations.provided
+            scopes.RUNTIME.minus += configurations.provided
         }
     }
 }
