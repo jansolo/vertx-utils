@@ -3,3 +3,7 @@ build
 vertx-utils.iml
 vertx-utils.ipr
 vertx-utils.iws
+*.iml
+*.ipr
+*.iws
+.DS_Store
